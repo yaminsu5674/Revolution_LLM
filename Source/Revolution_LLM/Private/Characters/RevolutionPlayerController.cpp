@@ -39,5 +39,11 @@ void ARevolutionPlayerController::BeginPlay()
 		{
 			HUD->AddToViewport();
 		}
+
+		Input = CreateWidget(this, InputClass);
+		if (Input != nullptr)
+		{
+			Input->AddToViewport();
+		}
 	}
 }

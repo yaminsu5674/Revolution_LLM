@@ -17,8 +17,14 @@ class REVOLUTION_LLM_API ARevolutionPlayerController : public APlayerController
 	UPROPERTY()
 	UUserWidget* HUD;
 
+	UPROPERTY()
+	UUserWidget* Input;
+
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<class UUserWidget> HUDClass;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UUserWidget> InputClass;
 
 protected:
 	virtual void BeginPlay() override;
