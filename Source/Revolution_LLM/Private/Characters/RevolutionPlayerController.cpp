@@ -2,6 +2,8 @@
 
 
 #include "Characters/RevolutionPlayerController.h"
+#include "CoreSystems/RevolutionGameMode.h"
+#include "Blueprint/UserWidget.h"
 
 
 void ARevolutionPlayerController::BeginPlay()
@@ -16,5 +18,26 @@ void ARevolutionPlayerController::BeginPlay()
 			FColor::Cyan,
 			TEXT("PlayerController init")
 		);
+	}
+
+	bShowMouseCursor = false;
+
+	/*AGameModeBase* CurrentGameMode = GetWorld()->GetAuthGameMode();
+	if (CurrentGameMode && CurrentGameMode->IsA(ARevolutionGameMode::StaticClass()))
+	{
+		bShowMouseCursor = true;
+	}
+	else
+	{
+		bShowMouseCursor = false;
+	}*/
+
+	if (IsLocalController())
+	{
+		HUD = CreateWidget(this, HUDClass);
+		if (HUD != nullptr)
+		{
+			HUD->AddToViewport();
+		}
 	}
 }
