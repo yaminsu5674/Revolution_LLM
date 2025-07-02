@@ -2,6 +2,13 @@
 
 
 #include "CoreSystems/RevolutionGameMode.h"
+#include "Characters/RevolutionPlayerController.h"
+
+ARevolutionGameMode::ARevolutionGameMode()
+{
+
+	PlayerControllerClass = ARevolutionPlayerController::StaticClass(); 
+}
 
 void ARevolutionGameMode::BeginPlay()
 {

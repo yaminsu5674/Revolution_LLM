@@ -1,0 +1,20 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Characters/RevolutionPlayerController.h"
+
+
+void ARevolutionPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.f,
+			FColor::Cyan,
+			TEXT("PlayerController init")
+		);
+	}
+}

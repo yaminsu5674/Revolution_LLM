@@ -30,6 +30,9 @@ class REVOLUTION_LLM_API ARevolutionGameMode : public AGameModeBase
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	ARevolutionGameMode();
+
 
 
 	
