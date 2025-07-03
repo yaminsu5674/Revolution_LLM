@@ -1,3 +1,5 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
 #include "InteractionActors/BaseInteractionActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInterface.h"
@@ -9,16 +11,22 @@ ABaseInteractionActor::ABaseInteractionActor()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
+	
 
 	Mesh->SetGenerateOverlapEvents(true);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Mesh->SetCollisionResponseToAllChannels(ECR_Block);
-	Mesh->SetRenderCustomDepth(true); // 테두리 효과 위해
+	Mesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // 중요!
 
-	// 마우스 이벤트 바인딩
-	Mesh->OnBeginCursorOver.AddDynamic(this, &ABaseInteractionActor::OnBeginCursorOver);
-	Mesh->OnEndCursorOver.AddDynamic(this, &ABaseInteractionActor::OnEndCursorOver);
-	Mesh->OnClicked.AddDynamic(this, &ABaseInteractionActor::OnClicked);
+	// 테두리 효과용 Custom Depth 활성화 (렌더링 측에서 PostProcess로 Outline 처리 가능)
+	Mesh->SetRenderCustomDepth(false); // 기본은 비활성화
+
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> HighlightMatFinder(TEXT("/Game/Static/LevelPrototyping/Materials/MI_Solid_Blue"));
+	if (HighlightMatFinder.Succeeded())
+	{
+		HighlightMaterial = HighlightMatFinder.Object;
+	}
 }
 
 void ABaseInteractionActor::BeginPlay()
@@ -33,35 +41,27 @@ void ABaseInteractionActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseInteractionActor::OnBeginCursorOver(UPrimitiveComponent* TouchedComponent)
-{
-	if (HighlightMaterial)
-	{
-		Mesh->SetMaterial(0, HighlightMaterial);
-	}
-}
-
-void ABaseInteractionActor::OnEndCursorOver(UPrimitiveComponent* TouchedComponent)
-{
-	if (OriginalMaterial)
-	{
-		Mesh->SetMaterial(0, OriginalMaterial);
-	}
-}
-
-void ABaseInteractionActor::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
-{
-	OnInteract();
-}
-
 void ABaseInteractionActor::OnInteract()
 {
-	// 여기서 자식 클래스에서 override 가능하게 기본 동작 구현
 	UE_LOG(LogTemp, Warning, TEXT("BaseInteractionActor interacted!"));
 
-	// 혹은 GEngine->AddOnScreenDebugMessage 사용 가능
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Interacted with BaseInteractionActor"));
+	}
+}
+
+void ABaseInteractionActor::SetOutline(bool bEnable)
+{
+	if (HighlightMaterial && bEnable)
+	{
+		//Mesh->SetMaterial(0, HighlightMaterial);
+		Mesh->SetRenderCustomDepth(true);
+		Mesh->SetCustomDepthStencilValue(1);
+	}
+	else if (OriginalMaterial && !bEnable)
+	{
+		//Mesh->SetMaterial(0, OriginalMaterial);
+		Mesh->SetRenderCustomDepth(false);
 	}
 }

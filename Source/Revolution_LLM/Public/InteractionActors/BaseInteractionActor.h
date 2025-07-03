@@ -1,3 +1,5 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,37 +12,28 @@ class REVOLUTION_LLM_API ABaseInteractionActor : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	ABaseInteractionActor();
 
 protected:
 	virtual void BeginPlay() override;
 
-	// Mesh for interaction object
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* Mesh;
 
-	// Original material to revert back
+	// 원래의 머티리얼
 	UPROPERTY()
 	UMaterialInterface* OriginalMaterial;
 
-	// Highlight material to apply on hover
+	// 하이라이트(테두리 등)용 머티리얼
 	UPROPERTY(EditAnywhere, Category = "Interaction")
 	UMaterialInterface* HighlightMaterial;
 
 public:
 	virtual void Tick(float DeltaTime) override;
 
-
-	UFUNCTION()
+	// 자식 클래스에서 override할 인터랙션 함수
 	virtual void OnInteract();
 
-	UFUNCTION()
-	void OnBeginCursorOver(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION()
-	void OnEndCursorOver(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION()
-	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	// 테두리 효과를 설정
+	void SetOutline(bool bEnable);
 };

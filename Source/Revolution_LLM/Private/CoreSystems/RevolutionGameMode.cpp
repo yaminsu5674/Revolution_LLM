@@ -16,7 +16,7 @@ void ARevolutionGameMode::BeginPlay()
 
 	Suspect1GPT = NewObject<UGPTManager>(this, UGPTManager::StaticClass());
 
-	if (Suspect1GPT)
+	/*if (Suspect1GPT)
 	{
 		if (GEngine)
 		{
@@ -27,7 +27,7 @@ void ARevolutionGameMode::BeginPlay()
 				TEXT("Suspect1 init") 
 			);
 		}
-	}
+	}*/
 
 }
 
