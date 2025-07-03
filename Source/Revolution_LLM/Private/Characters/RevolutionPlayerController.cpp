@@ -9,7 +9,7 @@
 
 ARevolutionPlayerController::ARevolutionPlayerController()
 {
-	PrimaryActorTick.bCanEverTick = true; // Tick 활성화
+	PrimaryActorTick.bCanEverTick = true; 
 	IsBasicMode = 1;
 	CurrentFocusedActor = nullptr;
 }
@@ -40,7 +40,11 @@ void ARevolutionPlayerController::BeginPlay()
 	if (InputClass)
 	{
 		Input = CreateWidget(this, InputClass);
-		if (Input) Input->AddToViewport();
+	}
+
+	if (ExitClass)
+	{
+		Exit = CreateWidget(this, ExitClass);
 	}
 }
 
@@ -69,45 +73,6 @@ void ARevolutionPlayerController::Tick(float DeltaSeconds)
 	}
 }
 
-//void ARevolutionPlayerController::TraceFromCrosshair()
-//{
-//	int32 ViewportSizeX, ViewportSizeY;
-//	GetViewportSize(ViewportSizeX, ViewportSizeY);
-//	FVector2D ScreenCenter(ViewportSizeX / 2.0f, ViewportSizeY / 2.0f);
-//
-//	FHitResult HitResult;
-//	if (GetHitResultAtScreenPosition(ScreenCenter, ECC_Visibility, true, HitResult))
-//	{
-//		if (AActor* HitActor = HitResult.GetActor())
-//		{
-//			ABaseInteractionActor* HitInteractionActor = Cast<ABaseInteractionActor>(HitActor);
-//
-//			// 라인트레이스로 새로운 액터 감지 시
-//			if (HitInteractionActor && HitInteractionActor != CurrentFocusedActor)
-//			{
-//				if (CurrentFocusedActor)
-//				{
-//					CurrentFocusedActor->SetOutline(false); // 이전 액터 테두리 제거
-//				}
-//
-//				CurrentFocusedActor = HitInteractionActor;
-//				CurrentFocusedActor->SetOutline(true); // 현재 액터 테두리 표시
-//				if (GEngine)
-//				{
-//					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Tracked!"));
-//				}
-//			}
-//			return;
-//		}
-//	}
-//
-//	// 감지된 액터가 없을 경우
-//	if (CurrentFocusedActor)
-//	{
-//		CurrentFocusedActor->SetOutline(false);
-//		CurrentFocusedActor = nullptr;
-//	}
-//}
 
 void ARevolutionPlayerController::TraceFromCrosshair()
 {
@@ -143,7 +108,7 @@ void ARevolutionPlayerController::TraceFromCrosshair()
 			{
 				bIsBaseInteractionActor = true;
 
-				// 새로운 액터 감지 시 outline 처리
+
 				if (HitInteractionActor != CurrentFocusedActor)
 				{
 					if (CurrentFocusedActor)
@@ -164,14 +129,6 @@ void ARevolutionPlayerController::TraceFromCrosshair()
 			CurrentFocusedActor = nullptr;
 		}
 
-		// 디버그 라인 그리기
-		/*DrawDebugLine(
-			GetWorld(),
-			TraceStart,
-			TraceEnd,
-			bIsBaseInteractionActor ? FColor::Green : FColor::Red,
-			false, 0.1f, 0, 2.0f
-		);*/
 	}
 }
 
@@ -181,9 +138,11 @@ void ARevolutionPlayerController::HandleInteraction()
 
 	if (CurrentFocusedActor)
 	{
-		CurrentFocusedActor->OnInteract(); // 자식에서 오버라이드된 함수 실행
+		CurrentFocusedActor->OnInteract(); 
+		SetBasicMode(0);
 	}
 }
+
 
 void ARevolutionPlayerController::SetBasicMode(bool bEnable)
 {
@@ -193,5 +152,69 @@ void ARevolutionPlayerController::SetBasicMode(bool bEnable)
 	bEnableClickEvents = !bEnable;
 	bEnableMouseOverEvents = !bEnable;
 
-	// 기본모드로 전환 시 HUD 조준점 등 복구 로직 추가 가능
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		2.0f,
+		FColor::Yellow,
+		FString::Printf(TEXT("SetBasicMode called with bEnable = %s"), bEnable ? TEXT("true") : TEXT("false"))
+	);
+
+
+	// HUD 제거
+	if (HUD)
+	{
+		HUD->RemoveFromParent();
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("HUD removed."));
+		HUD = nullptr;
+	}
+	else
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("HUD was already nullptr."));
+	}
+
+	// Exit 제거
+	if (Exit)
+	{
+		Exit->RemoveFromParent();
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Exit removed."));
+		Exit = nullptr;
+	}
+	else
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Exit was already nullptr."));
+	}
+
+	// 모드 전환 후 새 위젯 생성
+	if (IsBasicMode)
+	{
+		if (HUDClass)
+		{
+			HUD = CreateWidget(this, HUDClass);
+			if (HUD)
+			{
+				HUD->AddToViewport();
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("HUD created and added to viewport."));
+			}
+			else
+			{
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("HUD widget creation failed!"));
+			}
+		}
+	}
+	else
+	{
+		if (ExitClass)
+		{
+			Exit = CreateWidget(this, ExitClass);
+			if (Exit)
+			{
+				Exit->AddToViewport();
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Exit widget created and added to viewport."));
+			}
+			else
+			{
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Exit widget creation failed!"));
+			}
+		}
+	}
 }
