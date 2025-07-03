@@ -12,14 +12,9 @@ ABaseInteractionActor::ABaseInteractionActor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 	
-
-	Mesh->SetGenerateOverlapEvents(true);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Mesh->SetCollisionResponseToAllChannels(ECR_Block);
-	Mesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // 중요!
-
-	// 테두리 효과용 Custom Depth 활성화 (렌더링 측에서 PostProcess로 Outline 처리 가능)
-	Mesh->SetRenderCustomDepth(false); // 기본은 비활성화
+	Mesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+	
+	Mesh->SetRenderCustomDepth(false); 
 
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> HighlightMatFinder(TEXT("/Game/Static/LevelPrototyping/Materials/MI_Solid_Blue"));
