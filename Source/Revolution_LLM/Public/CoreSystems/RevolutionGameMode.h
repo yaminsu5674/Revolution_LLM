@@ -15,6 +15,9 @@ class REVOLUTION_LLM_API ARevolutionGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	FString InputString;
+
 	UPROPERTY()
 	UGPTManager* SelectedGPT = nullptr;
 
@@ -32,6 +35,9 @@ protected:
 
 public:
 	ARevolutionGameMode();
+
+	UFUNCTION(BlueprintCallable)
+	void SaveInputString(const FString& input);
 
 
 

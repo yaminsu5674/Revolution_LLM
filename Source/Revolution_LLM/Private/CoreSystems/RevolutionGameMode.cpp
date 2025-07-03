@@ -30,3 +30,18 @@ void ARevolutionGameMode::BeginPlay()
 	}
 
 }
+
+
+void ARevolutionGameMode::SaveInputString(const FString& input)
+{
+	InputString = input;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			5.f,
+			FColor::Blue,
+			InputString
+		);
+	}
+}
