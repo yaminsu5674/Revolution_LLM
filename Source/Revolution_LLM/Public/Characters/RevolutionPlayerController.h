@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mode")
 	int32 IsBasicMode;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mode")
+	int32 IsInputMode;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 

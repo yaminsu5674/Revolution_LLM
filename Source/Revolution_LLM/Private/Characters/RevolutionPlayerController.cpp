@@ -2,6 +2,7 @@
 
 #include "Characters/RevolutionPlayerController.h"
 #include "CoreSystems/RevolutionGameMode.h"
+#include "InteractionActors/Mic.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
@@ -11,6 +12,7 @@ ARevolutionPlayerController::ARevolutionPlayerController()
 {
 	PrimaryActorTick.bCanEverTick = true; 
 	IsBasicMode = 1;
+	IsInputMode = 0;
 	CurrentFocusedActor = nullptr;
 }
 
@@ -21,6 +23,8 @@ void ARevolutionPlayerController::BeginPlay()
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	bEnableMouseOverEvents = false;
+
+	SetInputMode(FInputModeGameOnly());
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -138,7 +142,13 @@ void ARevolutionPlayerController::HandleInteraction()
 
 	if (CurrentFocusedActor)
 	{
+		if (Cast<AMic>(CurrentFocusedActor))
+		{
+			IsInputMode = 1;
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Focused Actor is Mic!"));
+		}
 		CurrentFocusedActor->OnInteract(); 
+
 		SetBasicMode(0);
 	}
 }
@@ -184,9 +194,24 @@ void ARevolutionPlayerController::SetBasicMode(bool bEnable)
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Exit was already nullptr."));
 	}
 
+	// Input 제거
+	if (Input)
+	{
+		Input->RemoveFromParent();
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Input removed."));
+		Exit = nullptr;
+	}
+	else
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Input was already nullptr."));
+	}
+
 	// 모드 전환 후 새 위젯 생성
 	if (IsBasicMode)
 	{
+		IsInputMode = 0;
+		SetInputMode(FInputModeGameOnly());
+
 		if (HUDClass)
 		{
 			HUD = CreateWidget(this, HUDClass);
@@ -214,6 +239,15 @@ void ARevolutionPlayerController::SetBasicMode(bool bEnable)
 			else
 			{
 				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Exit widget creation failed!"));
+			}
+
+			if (IsInputMode)
+			{
+				Input = CreateWidget(this, InputClass);
+				if (Input)
+				{
+					Input->AddToViewport();
+				}
 			}
 		}
 	}
