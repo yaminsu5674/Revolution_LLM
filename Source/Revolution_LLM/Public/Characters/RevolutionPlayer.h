@@ -44,6 +44,10 @@ class ARevolutionPlayer : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Shoot Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ShootAction;
+
 public:
 	ARevolutionPlayer();
 
@@ -53,6 +57,9 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	/** Called for shooting input */
+	void Shoot(const FInputActionValue& Value);
 
 protected:
 	// APawn interface

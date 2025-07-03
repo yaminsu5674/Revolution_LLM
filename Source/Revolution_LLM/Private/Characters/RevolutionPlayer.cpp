@@ -64,6 +64,9 @@ void ARevolutionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARevolutionPlayer::Look);
+	
+		// Shooting
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ARevolutionPlayer::Shoot);
 	}
 	
 }
@@ -91,5 +94,13 @@ void ARevolutionPlayer::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ARevolutionPlayer::Shoot(const FInputActionValue& Value)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Shoot"));
 	}
 }
