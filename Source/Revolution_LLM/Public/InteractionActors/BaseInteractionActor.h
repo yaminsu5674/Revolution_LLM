@@ -32,5 +32,5 @@ public:
 
 	virtual void OnInteract();
 
-	void SetOutline(bool bEnable);
+	virtual void SetOutline(bool bEnable);
 };

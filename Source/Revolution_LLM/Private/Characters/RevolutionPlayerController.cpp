@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "InteractionActors/BaseInteractionActor.h"
+#include "InteractionActors/BaseInteractionCharacter.h"
 
 ARevolutionPlayerController::ARevolutionPlayerController()
 {
@@ -77,7 +78,6 @@ void ARevolutionPlayerController::Tick(float DeltaSeconds)
 	}
 }
 
-
 void ARevolutionPlayerController::TraceFromCrosshair()
 {
 	if (!PlayerCameraManager) return;
@@ -111,7 +111,6 @@ void ARevolutionPlayerController::TraceFromCrosshair()
 			if (ABaseInteractionActor* HitInteractionActor = Cast<ABaseInteractionActor>(HitResult.GetActor()))
 			{
 				bIsBaseInteractionActor = true;
-
 
 				if (HitInteractionActor != CurrentFocusedActor)
 				{
