@@ -43,7 +43,7 @@ protected:
 	UUserWidget* Exit;
 
 	UPROPERTY()
-	UUserWidget* Dialogue;
+	UUserWidget* Output;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<class UUserWidget> HUDClass;
@@ -55,7 +55,7 @@ protected:
 	TSubclassOf<class UUserWidget> ExitClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> DialogueClass;
+	TSubclassOf<UUserWidget> OutputClass;
 
 	UPROPERTY()
 	class ABaseInteractionActor* CurrentFocusedActor;

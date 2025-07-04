@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Characters/RevolutionPlayerController.h"
+#include "InteractionActors/BaseCharacter.h"
 #include "CoreSystems/RevolutionGameMode.h"
 #include "InteractionActors/Mic.h"
 #include "Blueprint/UserWidget.h"
@@ -52,9 +53,8 @@ void ARevolutionPlayerController::BeginPlay()
 		Exit = CreateWidget(this, ExitClass);
 	}
 
-	if (DialogueClass) {
-		Dialogue = CreateWidget(this, DialogueClass);
-		if (Dialogue) Dialogue->AddToViewport();
+	if (OutputClass) {
+		Output = CreateWidget(this, OutputClass);
 	}
 }
 
@@ -146,12 +146,17 @@ void ARevolutionPlayerController::HandleInteraction()
 
 	if (CurrentFocusedActor)
 	{
-		if (Cast<AMic>(CurrentFocusedActor))
+		if (Cast<ABaseCharacter>(CurrentFocusedActor))
 		{
 			IsInputMode = 1;
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, TEXT("Focused Actor is Mic!"));
 		}
 		CurrentFocusedActor->OnInteract(); 
+
+		CurrentFocusedActor->SetOutline(false);
+
+
+		CurrentFocusedActor = nullptr;
 
 		SetBasicMode(0);
 	}

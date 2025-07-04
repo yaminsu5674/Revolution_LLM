@@ -2,7 +2,9 @@
 
 
 #include "CoreSystems/RevolutionGameMode.h"
+#include "CoreSystems/RevolutionGameInstance.h"
 #include "Characters/RevolutionPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 ARevolutionGameMode::ARevolutionGameMode()
 {
@@ -13,6 +15,11 @@ ARevolutionGameMode::ARevolutionGameMode()
 void ARevolutionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (URevolutionGameInstance* MyGI = Cast<URevolutionGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		MyGI->SpawnSuspects();
+	}
 
 	Suspect1GPT = NewObject<UGPTManager>(this, UGPTManager::StaticClass());
 
