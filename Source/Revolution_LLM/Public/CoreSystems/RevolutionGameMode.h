@@ -18,6 +18,9 @@ class REVOLUTION_LLM_API ARevolutionGameMode : public AGameModeBase
 	UPROPERTY(EditAnywhere)
 	FString InputString;
 
+	UPROPERTY(EditAnywhere)
+	FString OutputString;
+
 	UPROPERTY()
 	UGPTManager* SelectedGPT = nullptr;
 
