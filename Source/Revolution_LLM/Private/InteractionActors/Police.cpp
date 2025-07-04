@@ -2,8 +2,6 @@
 
 
 #include "InteractionActors/Police.h"
-#include "CoreSystems/RevolutionGameInstance.h"
-#include "Kismet/GameplayStatics.h"
 
 
 APolice::APolice()
@@ -15,10 +13,6 @@ APolice::APolice()
 void APolice::BeginPlay()
 {
 	Super::BeginPlay();
-	if (URevolutionGameInstance* MyGI = Cast<URevolutionGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
-	{
-		MyGI->SpawnSuspects();
-	}
 
 	// 필요 시 여기서 초기화
 }
