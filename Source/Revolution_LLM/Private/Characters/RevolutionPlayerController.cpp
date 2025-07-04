@@ -51,6 +51,11 @@ void ARevolutionPlayerController::BeginPlay()
 	{
 		Exit = CreateWidget(this, ExitClass);
 	}
+
+	if (DialogueClass) {
+		Dialogue = CreateWidget(this, DialogueClass);
+		if (Dialogue) Dialogue->AddToViewport();
+	}
 }
 
 void ARevolutionPlayerController::SetupInputComponent()
